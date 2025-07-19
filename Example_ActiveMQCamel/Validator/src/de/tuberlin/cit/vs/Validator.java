@@ -8,7 +8,12 @@ import java.io.IOException;
 public class Validator {
     public static void main(String[] args) {
         try {
-            ActiveMQConnectionFactory conFactory = new ActiveMQConnectionFactory();
+            // Explicitly specify the broker URL to avoid relying on the
+            // implementation's default value which may differ across
+            // ActiveMQ versions. Without this the application might fail
+            // to connect to the embedded broker started by IntegrationApp.
+            ActiveMQConnectionFactory conFactory =
+                    new ActiveMQConnectionFactory("tcp://localhost:61616");
             conFactory.setTrustAllPackages(true);
             Connection con = conFactory.createConnection();
 
