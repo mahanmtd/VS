@@ -52,3 +52,15 @@ Each component is a separate Java program. Start them in separate terminals afte
 Optionally start **WebOrderSystem** to enter orders interactively or run **CallCenterOrderSystem** to simulate batch files in `orders/`.
 
 Press `<enter>` in each program to stop it.
+
+## Running Tests
+
+Tests are executed with Gradle. To run them, use:
+
+```bash
+cd Example_ActiveMQCamel
+gradle test
+```
+
+A successful run ends with `BUILD SUCCESSFUL`. Detailed results appear under
+`build/reports/tests/test/index.html`.
