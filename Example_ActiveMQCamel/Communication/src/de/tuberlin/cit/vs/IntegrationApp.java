@@ -147,9 +147,21 @@ public class IntegrationApp {
             if (oldEx == null) return newEx;
             Order a = oldEx.getIn().getBody(Order.class);
             Order b = newEx.getIn().getBody(Order.class);
+
             boolean ok = a.isValid() && b.isValid();
             a.setValid(ok);
-            a.setValidationResult("COMPLETED");
+
+            if (ok) {
+                a.setValidationResult("COMPLETED");
+            } else {
+                // preserve any failure reason from the system that rejected the order
+                if (!a.isValid() && a.getValidationResult() != null && !a.getValidationResult().isEmpty()) {
+                    a.setValidationResult(a.getValidationResult());
+                } else if (!b.isValid() && b.getValidationResult() != null && !b.getValidationResult().isEmpty()) {
+                    a.setValidationResult(b.getValidationResult());
+                }
+            }
+
             oldEx.getIn().setBody(a);
             return oldEx;
         }
