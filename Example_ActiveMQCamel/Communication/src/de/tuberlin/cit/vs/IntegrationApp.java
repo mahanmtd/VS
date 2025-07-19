@@ -148,18 +148,23 @@ public class IntegrationApp {
             Order a = oldEx.getIn().getBody(Order.class);
             Order b = newEx.getIn().getBody(Order.class);
 
-            boolean ok = a.isValid() && b.isValid();
+            // remember individual validity before overriding the flag in 'a'
+            boolean aValid = a.isValid();
+            boolean bValid = b.isValid();
+
+            boolean ok = aValid && bValid;
             a.setValid(ok);
 
             if (ok) {
+                // both systems accepted -> final order completed
                 a.setValidationResult("COMPLETED");
-            } else {
-                // preserve any failure reason from the system that rejected the order
-                if (!a.isValid() && a.getValidationResult() != null && !a.getValidationResult().isEmpty()) {
-                    a.setValidationResult(a.getValidationResult());
-                } else if (!b.isValid() && b.getValidationResult() != null && !b.getValidationResult().isEmpty()) {
-                    a.setValidationResult(b.getValidationResult());
-                }
+            } else if (!aValid) {
+                // billing or inventory (depending on message order) rejected
+                // -> keep failure reason of that message
+                a.setValidationResult(a.getValidationResult());
+            } else if (!bValid) {
+                // other system rejected -> propagate its reason
+                a.setValidationResult(b.getValidationResult());
             }
 
             oldEx.getIn().setBody(a);
