@@ -34,7 +34,7 @@ public class CallCenterOrderSystem {
 
         // read from stdin
         Scanner sc = new Scanner(System.in);
-        System.out.println("CallCenter> enter: FullName, surf, dive, custID or ‘quit’");
+        System.out.println("CallCenter> enter: FullName, surf, dive, custID or 'quit'");
         while (sc.hasNextLine()) {
             String line = sc.nextLine();
             if (line.equalsIgnoreCase("quit")) break;
